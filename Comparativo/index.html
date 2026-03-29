@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -24,14 +24,20 @@
             --ontime-purple-light: #5A005A;
             --ontime-purple-dark: #2A002A;
             --ontime-purple-soft: rgba(60, 0, 60, 0.08); 
+            --color-resultado: #0d6efd;
+            --color-resultado-soft: rgba(13,110,253,0.10);
+            --color-ticket: #0f766e;
+            --color-ticket-soft: rgba(15,118,110,0.10);
+            --color-margem: #166534;
+            --color-margem-soft: rgba(22,101,52,0.10);
             --bg: #F0F2F5;
             --bg-card: #FFFFFF;
-            --text-primary: #2C3E50;
+            --text-primary: #1e1e2e;
             --text-secondary: #5A5A6E;
             --border-color: #E2E8F0;
             --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            --font-primary: 'Inter', sans-serif;
-            --font-heading: 'Montserrat', sans-serif;
+            --font-primary: 'DM Sans', sans-serif;
+            --font-heading: 'Syne', sans-serif;
             --transition-speed: 0.2s;
         }
 
@@ -45,6 +51,9 @@
         body.dark-mode {
             --bg: #121212; --bg-card: #1E1E26; --text-primary: #E0E0E0; --text-secondary: #A0A0B0;
             --border-color: #333344; --card-shadow: 0 4px 15px rgba(0,0,0,0.4); --ontime-purple-soft: rgba(255, 255, 255, 0.05);
+            --color-resultado-soft: rgba(13,110,253,0.15);
+            --color-ticket-soft: rgba(15,118,110,0.15);
+            --color-margem-soft: rgba(22,101,52,0.15);
         }
         body.dark-mode ::-webkit-scrollbar-thumb { background: #444455; }
         body.dark-mode header { background: #181820; border-bottom: 4px solid var(--ontime-orange); }
@@ -175,15 +184,34 @@
         #page-dashboard.is-empty #export-block-1, #page-dashboard.is-empty #export-block-2, #page-dashboard.is-empty #export-block-3 { display: none; }
 
         /* KPIS E GRÁFICOS */
-        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .kpi-card { background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); border-left: 5px solid var(--ontime-purple); display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; }
-        .kpi-card h3 { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; transition: color 0.3s; }
-        .kpi-card .valor { font-family: var(--font-heading); font-size: 26px; font-weight: 800; color: var(--ontime-purple); line-height: 1.1; transition: color 0.3s; }
-        .kpi-card .variacao { font-size: 12px; font-weight: 700; margin-top: 6px; display: inline-block; padding: 2px 8px; border-radius: 12px; background: #f0f0f0; width: fit-content; transition: background 0.3s; }
+        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 25px; }
+        .kpi-card { background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); display: flex; flex-direction: column; gap: 10px; transition: all 0.3s; position: relative; overflow: hidden; }
+        .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; border-radius: 16px 0 0 16px; }
+        .kpi-card.kpi-rb::before   { background: var(--ontime-purple); }
+        .kpi-card.kpi-custo::before { background: var(--ontime-orange); }
+        .kpi-card.kpi-margem::before { background: var(--color-margem); }
+        .kpi-card.kpi-resultado::before { background: var(--color-resultado); }
+        .kpi-card.kpi-ticket::before { background: var(--color-ticket); }
+        .kpi-header { display: flex; align-items: center; gap: 8px; }
+        .kpi-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .kpi-rb .kpi-icon      { background: var(--ontime-purple-soft); color: var(--ontime-purple); }
+        .kpi-custo .kpi-icon   { background: var(--ontime-orange-soft); color: var(--ontime-orange-dark); }
+        .kpi-margem .kpi-icon  { background: var(--color-margem-soft); color: var(--color-margem); }
+        .kpi-resultado .kpi-icon { background: var(--color-resultado-soft); color: var(--color-resultado); }
+        .kpi-ticket .kpi-icon  { background: var(--color-ticket-soft); color: var(--color-ticket); }
+        .kpi-card h3 { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin: 0; font-weight: 700; transition: color 0.3s; }
+        .kpi-card .valor { font-family: var(--font-heading); font-size: 24px; font-weight: 800; color: var(--text-primary); line-height: 1.1; transition: color 0.3s; }
+        .kpi-card .variacao { font-size: 11px; font-weight: 700; display: inline-block; padding: 2px 8px; border-radius: 12px; background: #f0f0f0; width: fit-content; transition: background 0.3s; }
         .kpi-card .variacao.positiva { color: #008148; background: #E6F4EA; }
         .kpi-card .variacao.negativa { color: #C62828; background: #FCE8E6; }
         .kpi-card .variacao.neutra { color: var(--text-secondary); background: var(--border-color); }
-        #custoTotal { color: var(--ontime-orange-dark) !important; }
+        body.dark-mode .kpi-card .variacao.neutra { background: #333344; color: #CCC; }
+        body.dark-mode .kpi-rb .kpi-icon      { background: rgba(60,0,60,0.25); color: #d090d0; }
+        body.dark-mode .kpi-custo .kpi-icon   { background: rgba(255,110,0,0.2); color: var(--ontime-orange-light); }
+        body.dark-mode .kpi-margem .kpi-icon  { background: rgba(22,101,52,0.2); color: #4ade80; }
+        body.dark-mode .kpi-resultado .kpi-icon { background: rgba(13,110,253,0.2); color: #93c5fd; }
+        body.dark-mode .kpi-ticket .kpi-icon  { background: rgba(15,118,110,0.2); color: #5eead4; }
+        body.dark-mode .kpi-card .valor { color: #FFFFFF; }
 
         .graficos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
         .grafico-linha-unica { display: block; margin-bottom: 25px; }
@@ -258,22 +286,32 @@
             #graficoCentroCusto { max-width: 250px !important; max-height: 250px !important; margin: 0 auto; display: block; }
             @page { size: landscape; margin: 5mm; }
         }
+        /* TOAST DE ERRO */
+        .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: #C62828; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 99999; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #166534; }
+
+        /* GRÁFICO DE MARGEM */
+        .grafico-margem-container { margin-bottom: 25px; }
         .export-buttons { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
     </style>
 </head>
 <body>
 <div id="loadingOverlay" class="loading-overlay">
-    <div class="spinner-large"></div>
-    <h2>A carregar <span>ONTIME</span>...</h2>
-    <p style="color: var(--text-secondary); margin-top: 10px; font-size: 14px;">A processar os dados do sistema</p>
+    <div style="text-align:center;">
+        <div style="width:56px;height:56px;border:5px solid rgba(60,0,60,0.15);border-top:5px solid #FF6E00;border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 20px;"></div>
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#3C003C;">ON<span style="color:#FF6E00;">TIME</span></div>
+        <p style="color:#5A5A6E;margin-top:6px;font-size:13px;font-family:'DM Sans',sans-serif;">Carregando dados do sistema...</p>
+    </div>
 </div>
+<div id="toastEl" class="toast"><i class="ph-fill ph-warning-circle"></i><span id="toastMsg"></span></div>
 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <header id="header-area">
     <a href="../" class="btn-voltar" title="Voltar ao Menu Principal"><i class="ph ph-arrow-left"></i> Voltar</a>
     
-    <button class="menu-toggle" onclick="toggleSidebar()" title="Menu Filtros">☰</button>
+    <button class="menu-toggle" onclick="toggleSidebar()" title="Menu Filtros"><i class="ph ph-list"></i></button>
     <h1>ON<span>TIME</span> | Resumo Comparativo RB / Custo</h1>
 </header>
 
@@ -289,10 +327,10 @@
             </div>
 
             <div class="nav-bar">
-                <div class="nav-tab active" onclick="mudarPagina('dashboard')">📊 Dashboard</div>
-                <div class="nav-tab" onclick="mudarPagina('relatorio')">📑 Relatório Mensal</div>
+                <div class="nav-tab active" onclick="mudarPagina('dashboard')"><i class="ph-fill ph-chart-bar" style="font-size:15px;"></i> Dashboard</div>
+                <div class="nav-tab" onclick="mudarPagina('relatorio')"><i class="ph-fill ph-file-text" style="font-size:15px;"></i> Relatório Mensal</div>
                 <div style="flex:1"></div>
-                <button class="btn icon-only" onclick="toggleDarkMode()" title="Alternar Modo Escuro">🌓</button>
+                <button class="btn icon-only" onclick="toggleDarkMode()" title="Alternar Modo Escuro"><i class="ph ph-moon"></i></button>
                 <div id="exportButtonsContainer" class="export-buttons"></div>
                 <button class="btn icon-only" id="atualizarBtn" onclick="carregarDados(true)" title="Forçar Atualização (Ignorar Cache)">
                     <svg id="icone-atualizar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -310,29 +348,57 @@
                 
                 <div id="export-block-1">
                     <div class="kpis">
-                        <div class="kpi-card"><h3>Receita Bruta</h3><div class="valor" id="rbTotal">R$ 0</div><div class="variacao" id="varRb">--</div></div>
-                        <div class="kpi-card"><h3>Custo Total</h3><div class="valor" id="custoTotal">R$ 0</div><div class="variacao" id="varCusto">--</div></div>
-                        <div class="kpi-card"><h3>Margem Bruta</h3><div class="valor" id="margem">0%</div><div class="variacao" id="varMargem">--</div></div>
+                        <div class="kpi-card kpi-rb">
+                            <div class="kpi-header"><div class="kpi-icon"><i class="ph-fill ph-trend-up"></i></div><h3>Receita Bruta</h3></div>
+                            <div class="valor" id="rbTotal">R$ 0</div>
+                            <div class="variacao" id="varRb">--</div>
+                        </div>
+                        <div class="kpi-card kpi-custo">
+                            <div class="kpi-header"><div class="kpi-icon"><i class="ph-fill ph-receipt"></i></div><h3>Custo Total</h3></div>
+                            <div class="valor" id="custoTotal">R$ 0</div>
+                            <div class="variacao" id="varCusto">--</div>
+                        </div>
+                        <div class="kpi-card kpi-resultado">
+                            <div class="kpi-header"><div class="kpi-icon"><i class="ph-fill ph-currency-circle-dollar"></i></div><h3>Resultado</h3></div>
+                            <div class="valor" id="resultadoTotal">R$ 0</div>
+                            <div class="variacao" id="varResultado">--</div>
+                        </div>
+                        <div class="kpi-card kpi-margem">
+                            <div class="kpi-header"><div class="kpi-icon"><i class="ph-fill ph-percent"></i></div><h3>Margem Bruta</h3></div>
+                            <div class="valor" id="margem">0%</div>
+                            <div class="variacao" id="varMargem">--</div>
+                        </div>
+                        <div class="kpi-card kpi-ticket">
+                            <div class="kpi-header"><div class="kpi-icon"><i class="ph-fill ph-users"></i></div><h3>Ticket Médio / Cliente</h3></div>
+                            <div class="valor" id="ticketMedio">R$ 0</div>
+                            <div class="variacao" id="varTicket">--</div>
+                        </div>
                     </div>
-                    <div class="grafico-linha-unica"><div class="grafico-card"><h2>📈 Receita x Custo Mensal <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Clique nas barras para filtrar)</span></h2><canvas id="graficoMensal"></canvas></div></div>
+                    <div class="grafico-linha-unica"><div class="grafico-card"><h2>Receita x Custo Mensal <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Clique nas barras para filtrar)</span></h2><canvas id="graficoMensal"></canvas></div></div>
                 </div>
 
                 <div id="export-block-2">
                     <div class="graficos">
-                        <div class="grafico-card"><h2>📅 Total gerado por Trimestre</h2><canvas id="graficoTrimestre"></canvas></div>
-                        <div class="grafico-card"><h2>🏆 Soma Realizada por Cliente <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Clique para filtrar)</span></h2><canvas id="graficoTop10Horizontal"></canvas></div>
+                        <div class="grafico-card"><h2>Total gerado por Trimestre</h2><canvas id="graficoTrimestre"></canvas></div>
+                        <div class="grafico-card"><h2>Soma por Cliente <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Clique para filtrar)</span></h2><canvas id="graficoTop10Horizontal"></canvas></div>
                     </div>
                     <div class="graficos">
-                        <div class="grafico-card"><h2>🥧 Percentual Acumulado C.C. <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Clique nas fatias)</span></h2><canvas id="graficoCentroCusto"></canvas></div>
-                        <div class="grafico-card"><h2>📊 Receita/Custo por Centro de Custo <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Clique nas barras)</span></h2><canvas id="graficoCCBarras"></canvas></div>
+                        <div class="grafico-card"><h2>Percentual Acumulado por C.C. <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Clique nas fatias)</span></h2><canvas id="graficoCentroCusto"></canvas></div>
+                        <div class="grafico-card"><h2>Receita/Custo por Centro de Custo <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Clique nas barras)</span></h2><canvas id="graficoCCBarras"></canvas></div>
                     </div>
                 </div>
 
                 <div id="export-block-3">
                     <div class="grafico-linha-unica">
                         <div class="grafico-card">
-                            <h2 id="tituloYoY">📊 Comparativo Anual</h2>
+                            <h2 id="tituloYoY">Comparativo Anual</h2>
                             <div style="height:350px"><canvas id="graficoYoY"></canvas></div>
+                        </div>
+                    </div>
+                    <div class="grafico-linha-unica grafico-margem-container">
+                        <div class="grafico-card">
+                            <h2>Evolução da Margem Bruta (%) <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">Mês a mês</span></h2>
+                            <div style="height:280px"><canvas id="graficoMargem"></canvas></div>
                         </div>
                     </div>
                 </div>
@@ -364,7 +430,8 @@
     window.currentMode = 'RB';
     window.sortRelatorio = { mes: null, tipo: null, asc: false };
     
-    let graficoMensal, graficoTop10Horizontal, graficoTrimestre, graficoCentroCusto, graficoCCBarras, graficoYoYChart = null;
+    let graficoMensal, graficoTop10Horizontal, graficoTrimestre, graficoCentroCusto, graficoCCBarras, graficoMargemMensal;
+    window.graficoYoYChart = null;
     
     const auxiliar = [
         { operacao: "LM", cc: "30010101", centro: "OTX B2C", sub: "LM" },
@@ -420,8 +487,32 @@
     function normalizarTexto(str) { return str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim() : str; }
     function limparTextoCsv(str) { return str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, "").trim() : ""; }
     function normalizarMes(m) { return m ? normalizarTexto(m) : m; }
+
+    // Parser CSV robusto: suporta campos com vírgulas entre aspas (RFC 4180)
+    function parseCsvLine(line) {
+        const result = [];
+        let cur = '', inQuote = false;
+        for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (ch === '"') {
+                if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
+                else { inQuote = !inQuote; }
+            } else if (ch === ',' && !inQuote) {
+                result.push(cur.trim()); cur = '';
+            } else { cur += ch; }
+        }
+        result.push(cur.trim());
+        return result;
+    }
     
-    function formatarNumeroInteiro(v){ return new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 }).format(v); }
+    function showToast(msg, tipo = 'error') {
+        const el = document.getElementById('toastEl');
+        const msgEl = document.getElementById('toastMsg');
+        if (!el || !msgEl) return;
+        msgEl.textContent = msg;
+        el.className = `toast${tipo === 'success' ? ' success' : ''} show`;
+        setTimeout(() => el.classList.remove('show'), 4000);
+    }
     
     // FORMATADOR DE EIXOS (M e mil)
     function formatarEixo(v) {
@@ -509,7 +600,7 @@
             }
 
             const linhas = csvText.split('\n').filter(l=>l.trim()!=='');
-            const cabecalho = linhas[0].split(',').map(h=>h.trim());
+            const cabecalho = parseCsvLine(linhas[0]).map(h=>h.trim());
             const idxCliente = cabecalho.indexOf('cliente');
             const idxOperacao = cabecalho.indexOf('operacao');
             const idxRb = cabecalho.indexOf('rb');
@@ -517,12 +608,12 @@
             const idxMes = cabecalho.indexOf('mes');
             
             window.dadosCompletos = linhas.slice(1).map(linha=>{
-                const cols = linha.split(',').map(c=>c.trim());
+                const cols = parseCsvLine(linha);
                 return {
                     cliente: normalizarTexto(cols[idxCliente] || ''),
                     operacao: normalizarTexto(cols[idxOperacao] || ''),
-                    rb: parseFloat(cols[idxRb]) || 0,
-                    custo: parseFloat(cols[idxCusto]) || 0,
+                    rb: parseFloat((cols[idxRb]||'').replace(',','.')) || 0,
+                    custo: parseFloat((cols[idxCusto]||'').replace(',','.')) || 0,
                     mes: normalizarMes(cols[idxMes] || '')
                 };
             }).filter(d=>d.cliente && d.operacao);
@@ -534,7 +625,7 @@
             
         } catch(e){ 
             console.error(e); 
-            alert("Erro ao carregar dados da planilha. Verifique sua conexão.");
+            showToast('Erro ao carregar dados. Verifique sua conexão e tente novamente.');
         } finally {
             if(btnIcon) btnIcon.classList.remove('spin-anim');
             if(btn) btn.disabled = false;
@@ -721,22 +812,33 @@
             atualizarGraficoCentroCusto(dadosFiltrados, sync);
             atualizarGraficoCCBarras(dadosFiltrados, sync);
             atualizarGraficoYoY(dadosParaYoY, window.filtroAno, sync);
+            atualizarGraficoMargemMensal(dadosMensal, sync);
         }
     }
+
+    function formatarNumeroInteiro(v){ return new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 }).format(v); }
 
     function atualizarKPIs(dados) {
         const totalRB = dados.reduce((a,d)=>a+d.rb,0);
         const totalCusto = dados.reduce((a,d)=>a+d.custo,0);
-        const margem = totalRB>0?((totalRB-totalCusto)/totalRB*100):0;
+        const resultado = totalRB - totalCusto;
+        const margem = totalRB > 0 ? ((resultado / totalRB) * 100) : 0;
+        const clientes = new Set(dados.map(d=>d.cliente));
+        const ticketMedio = clientes.size > 0 ? (totalRB / clientes.size) : 0;
         
         document.getElementById('rbTotal').innerText = `R$ ${formatarNumeroInteiro(totalRB)}`;
         document.getElementById('custoTotal').innerText = `R$ ${formatarNumeroInteiro(totalCusto)}`;
+        document.getElementById('resultadoTotal').innerText = `R$ ${formatarNumeroInteiro(resultado)}`;
         document.getElementById('margem').innerText = `${margem.toFixed(1)}%`;
+        document.getElementById('ticketMedio').innerText = `R$ ${formatarNumeroInteiro(ticketMedio)}`;
         
         const dadosAnteriores = getPeriodoAnterior(dados);
         const prevRB = dadosAnteriores.reduce((a,d)=>a+d.rb,0);
         const prevCusto = dadosAnteriores.reduce((a,d)=>a+d.custo,0);
-        const prevMargem = prevRB>0?((prevRB-prevCusto)/prevRB*100):0;
+        const prevResultado = prevRB - prevCusto;
+        const prevMargem = prevRB > 0 ? ((prevResultado / prevRB) * 100) : 0;
+        const prevClientes = new Set(dadosAnteriores.map(d=>d.cliente));
+        const prevTicket = prevClientes.size > 0 ? (prevRB / prevClientes.size) : 0;
         
         const varRb = formatarVariacao(totalRB, prevRB);
         const elVarRb = document.getElementById('varRb');
@@ -745,6 +847,10 @@
         const varCusto = formatarVariacao(totalCusto, prevCusto, true);
         const elVarCusto = document.getElementById('varCusto');
         elVarCusto.innerText = varCusto.texto; elVarCusto.className = `variacao ${varCusto.classe}`;
+
+        const varRes = formatarVariacao(resultado, prevResultado);
+        const elVarRes = document.getElementById('varResultado');
+        elVarRes.innerText = varRes.texto; elVarRes.className = `variacao ${varRes.classe}`;
         
         let valMargemDiff = margem - prevMargem;
         const elVarMargem = document.getElementById('varMargem');
@@ -754,9 +860,83 @@
             elVarMargem.innerText = `${valMargemDiff > 0 ? '+' : ''}${valMargemDiff.toFixed(1)} p.p.`;
             elVarMargem.className = `variacao ${valMargemDiff > 0 ? 'positiva' : 'negativa'}`;
         }
+
+        const varTicket = formatarVariacao(ticketMedio, prevTicket);
+        const elVarTicket = document.getElementById('varTicket');
+        elVarTicket.innerText = varTicket.texto; elVarTicket.className = `variacao ${varTicket.classe}`;
     }
 
     function chartHoverCursor(e, elements) { e.native.target.style.cursor = elements.length ? 'pointer' : 'default'; }
+
+    function atualizarGraficoMargemMensal(dados, sync = false) {
+        const mesesMap = {};
+        const ordemMeses = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+        dados.forEach(d => {
+            const m = d.mes.split('/')[0].replace('.', '').trim();
+            if (!mesesMap[m]) mesesMap[m] = { rb: 0, custo: 0 };
+            mesesMap[m].rb += d.rb;
+            mesesMap[m].custo += d.custo;
+        });
+        const mesesOrd = Object.keys(mesesMap).sort((a,b) => ordemMeses.indexOf(a) - ordemMeses.indexOf(b));
+        const margens = mesesOrd.map(m => {
+            const v = mesesMap[m];
+            return v.rb > 0 ? parseFloat(((v.rb - v.custo) / v.rb * 100).toFixed(2)) : 0;
+        });
+
+        const textColor = getChartTextColor();
+        const gridColor = getChartGridColor();
+        const tooltipBg = getChartTooltipBg();
+        const tooltipText = getChartTooltipText();
+
+        if (graficoMargemMensal) {
+            graficoMargemMensal.data.labels = mesesOrd;
+            graficoMargemMensal.data.datasets[0].data = margens;
+            graficoMargemMensal.options.scales.x.ticks.color = textColor;
+            graficoMargemMensal.options.scales.y.ticks.color = textColor;
+            graficoMargemMensal.options.scales.y.grid.color = gridColor;
+            graficoMargemMensal.options.plugins.tooltip.backgroundColor = tooltipBg;
+            graficoMargemMensal.options.plugins.tooltip.titleColor = tooltipText;
+            graficoMargemMensal.options.plugins.tooltip.bodyColor = tooltipText;
+            graficoMargemMensal.options.plugins.datalabels.color = textColor;
+            graficoMargemMensal.update(sync ? 'none' : undefined);
+        } else {
+            const ctx = document.getElementById('graficoMargem').getContext('2d');
+            graficoMargemMensal = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: mesesOrd,
+                    datasets: [{
+                        label: 'Margem %',
+                        data: margens,
+                        borderColor: '#166534',
+                        backgroundColor: 'rgba(22,101,52,0.08)',
+                        borderWidth: 2.5,
+                        pointBackgroundColor: '#166534',
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        fill: true,
+                        tension: 0.35
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: tooltipBg, titleColor: tooltipText, bodyColor: tooltipText,
+                            callbacks: { label: ctx => `Margem: ${ctx.raw.toFixed(1)}%` }
+                        },
+                        datalabels: { anchor: 'top', align: 'top', offset: 4, formatter: v => `${v.toFixed(1)}%`, color: textColor, font: { weight: 'bold', size: 12 } }
+                    },
+                    scales: {
+                        y: { beginAtZero: false, grace: '10%', grid: { color: gridColor, borderDash: [5,5] }, border: { display: false }, ticks: { callback: v => `${v}%`, color: textColor, font: { size: 11 } } },
+                        x: { grid: { display: false }, border: { display: false }, ticks: { color: textColor, font: { weight: '600', size: 11 } } }
+                    }
+                }, plugins: [ChartDataLabels]
+            });
+        }
+    }
 
     // --- GRÁFICOS (TODOS ATUALIZADOS COM SIZE: 13) ---
     function atualizarGraficoMensal(dados, sync = false) {
@@ -1061,7 +1241,7 @@
         // Atualiza Título
         const tituloEl = document.getElementById('tituloYoY');
         if(tituloEl) {
-            tituloEl.innerHTML = `📊 Comparativo Anual (${anoAnt} vs ${anoAtual}) <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Visão ${window.currentMode})</span>`;
+            tituloEl.innerHTML = `Comparativo Anual (${anoAnt} vs ${anoAtual}) <span style="font-size:10px; font-weight:normal; color:var(--text-secondary);">(Visão ${window.currentMode})</span>`;
         }
 
         const labels = meses;
@@ -1347,12 +1527,12 @@
         if (!container) return;
         if (pagina === 'dashboard') {
             container.innerHTML = `
-                <button class="btn" onclick="exportarPDF()">📄 PDF</button>
-                <button class="btn" onclick="exportarPNG()">📸 PNG</button>
-                <button class="btn primary" onclick="imprimir()">🖨️ Imprimir</button>
+                <button class="btn" onclick="exportarPDF()"><i class="ph-fill ph-file-pdf"></i> PDF</button>
+                <button class="btn" onclick="exportarPNG()"><i class="ph-fill ph-image"></i> PNG</button>
+                <button class="btn primary" onclick="imprimir()"><i class="ph-fill ph-printer"></i> Imprimir</button>
             `;
         } else {
-            container.innerHTML = `<button class="btn primary" onclick="exportarCSV()">📥 Exportar para Excel (CSV)</button>`;
+            container.innerHTML = `<button class="btn primary" onclick="exportarCSV()"><i class="ph-fill ph-download-simple"></i> Exportar Excel (CSV)</button>`;
         }
     }
 
