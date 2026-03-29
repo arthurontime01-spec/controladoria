@@ -535,14 +535,87 @@
 
         .footer-badge i { color: var(--orange); font-size: 14px; }
 
-        /* ─── RESPONSIVE ─────────────────────────────────────── */
+        /* ─── MOBILE BOTTOM NAV ──────────────────────────────── */
+        .mobile-nav {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             header { padding: 0 20px; }
             .hero  { padding: 36px 20px 32px; }
-            main   { padding: 28px 20px 48px; }
-            footer { padding: 16px 20px; flex-direction: column; gap: 8px; text-align: center; }
+            main   { padding: 28px 20px 100px; } /* espaço para a nav bar */
+            footer { display: none; } /* footer vira a nav bar no mobile */
             .tools-grid { grid-template-columns: 1fr; }
             .stats-row { gap: 12px; }
+
+            /* Chips de filtro: scroll horizontal, sem quebra de linha */
+            .filter-chips {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .filter-chips::-webkit-scrollbar { display: none; }
+
+            /* ── Bottom Nav ── */
+            .mobile-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0; left: 0; right: 0;
+                height: 64px;
+                background: var(--purple);
+                border-top: 2px solid var(--orange);
+                z-index: 200;
+                box-shadow: 0 -4px 20px rgba(60,0,60,0.30);
+                padding: 0 8px;
+                align-items: stretch;
+            }
+
+            .nav-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                color: rgba(255,255,255,0.45);
+                text-decoration: none;
+                font-size: 10px;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+                padding: 8px 4px;
+                border-radius: 10px;
+                transition: color 0.2s, background 0.2s;
+                min-width: 0; /* permite shrink correto */
+                cursor: pointer;
+                background: none;
+                border: none;
+            }
+
+            .nav-item i {
+                font-size: 22px;
+                flex-shrink: 0;
+            }
+
+            .nav-item span {
+                /* Em telas muito pequenas some o texto */
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+
+            .nav-item.active,
+            .nav-item:hover {
+                color: var(--orange);
+                background: rgba(255,110,0,0.10);
+            }
+
+            /* Abaixo de 380px: esconde o texto, só ícone */
+            @media (max-width: 380px) {
+                .nav-item span { display: none; }
+                .nav-item { gap: 0; }
+            }
         }
     </style>
 </head>
@@ -655,11 +728,31 @@
     </div>
 </main>
 
-<!-- ── FOOTER ── -->
+<!-- ── FOOTER (desktop) ── -->
 <footer>
     <span class="footer-copy">&copy; 2026 Ontime Controladoria. Todos os direitos reservados.</span>
     <span class="footer-badge"><i class="ph-fill ph-shield-check"></i> Ambiente interno seguro</span>
 </footer>
+
+<!-- ── MOBILE BOTTOM NAV ── -->
+<nav class="mobile-nav" aria-label="Navegação mobile">
+    <button class="nav-item active" onclick="mobileFilter(this, 'all')">
+        <i class="ph-fill ph-squares-four"></i>
+        <span>Todas</span>
+    </button>
+    <button class="nav-item" onclick="mobileFilter(this, 'Análise')">
+        <i class="ph-fill ph-scales"></i>
+        <span>Análise</span>
+    </button>
+    <button class="nav-item" onclick="mobileFilter(this, 'Tabulação')">
+        <i class="ph-fill ph-table"></i>
+        <span>Tabulação</span>
+    </button>
+    <button class="nav-item" onclick="mobileFilter(this, 'Relatório')">
+        <i class="ph-fill ph-chart-pie-slice"></i>
+        <span>Relatório</span>
+    </button>
+</nav>
 
 <script>
     const searchInput = document.getElementById('search');
@@ -710,6 +803,27 @@
             filterCards();
         });
     });
+
+    // Mobile bottom nav filter — sincroniza com os chips do desktop
+    function mobileFilter(btn, filter) {
+        // Ativa o botão mobile
+        document.querySelectorAll('.mobile-nav .nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Sincroniza com os chips do desktop
+        filterChips.forEach(c => {
+            c.classList.toggle('active', c.dataset.filter === filter);
+        });
+
+        activeFilter = filter;
+        filterCards();
+
+        // Scroll suave para a grid
+        document.getElementById('grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Expõe globalmente para o onclick inline
+    window.mobileFilter = mobileFilter;
 
     // Live clock for last update
     const yearEl = document.getElementById('last-update');
