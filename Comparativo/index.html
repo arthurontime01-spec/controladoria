@@ -434,10 +434,22 @@
     window.getCCSub = (op) => auxiliar.find(a=>a.operacao===op) || { cc:"00000000", centro:"Outros", sub:op };
     
     // INICIALIZAÇÃO
-    document.addEventListener("DOMContentLoaded", () => {
-        if(localStorage.getItem('ontime-theme') === 'dark') document.body.classList.add('dark-mode');
-        carregarDados();
-    });
+document.addEventListener("DOMContentLoaded", () => {
+    if(localStorage.getItem('ontime-theme') === 'dark') document.body.classList.add('dark-mode');
+    
+    // --- CONTROLE DO BOTÃO VOLTAR ---
+    const btnVoltar = document.querySelector('.btn-voltar'); // Pega o botão 
+    const referrer = document.referrer;
+    const currentHost = window.location.hostname;
+    
+    // Se não houver referrer (acesso direto) ou se a origem não for o seu próprio domínio (hub), oculta o botão
+    if (btnVoltar && (!referrer || !referrer.includes(currentHost))) {
+        btnVoltar.style.display = 'none';
+    }
+    // --------------------------------
+    
+    carregarDados();
+});
     
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
