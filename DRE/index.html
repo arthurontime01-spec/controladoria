@@ -653,6 +653,17 @@
             fullHeaders = []; fullData = []; currentDisplayHeaders = []; currentDisplayData = [];
             dropdownState = { conta: { allItems: [], currentChecked: new Set(), appliedChecked: new Set() }, desc: { allItems: [], currentChecked: new Set(), appliedChecked: new Set() } };
         }
+        // --- CONTROLE DO BOTÃO VOLTAR ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const botoesVoltar = document.querySelectorAll('a[href="../"]');
+            const referrer = document.referrer;
+            const currentHost = window.location.hostname;
+            
+            if (!referrer || !referrer.includes(currentHost)) {
+                botoesVoltar.forEach(btn => btn.style.display = 'none');
+            }
+        });
+        // --------------------------------
     </script>
 </body>
 </html>
