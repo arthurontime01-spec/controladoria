@@ -1147,7 +1147,19 @@ const app = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => app.init());
+document.addEventListener('DOMContentLoaded', () => {
+    // --- CONTROLE DO BOTÃO VOLTAR ---
+    const botoesVoltar = document.querySelectorAll('a[href="../"]');
+    const referrer = document.referrer;
+    const currentHost = window.location.hostname;
+    
+    if (!referrer || !referrer.includes(currentHost)) {
+        botoesVoltar.forEach(btn => btn.style.display = 'none');
+    }
+    // --------------------------------
+    
+    app.init();
+});
 </script>
 
 </body>
